@@ -1,5 +1,7 @@
 package br.com.zupacademy.valteir.mercadolivre.criarusuario;
 
+import br.com.zupacademy.valteir.mercadolivre.config.validators.UniqueValue;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -8,6 +10,7 @@ public class UsuarioRequest {
 
     @NotBlank
     @Email
+    @UniqueValue(domainClass = Usuario.class, fieldName = "email")
     private String email;
 
     @NotBlank
