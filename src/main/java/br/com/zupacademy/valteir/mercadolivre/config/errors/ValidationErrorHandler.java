@@ -2,6 +2,7 @@ package br.com.zupacademy.valteir.mercadolivre.config.errors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,8 +16,8 @@ import java.util.List;
 public class ValidationErrorHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public List<ErroResponse> handle(MethodArgumentNotValidException exception) {
+    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    public List<ErroResponse> handle(BindException exception) {
         BindingResult result =  exception.getBindingResult();
 
         List<ErroResponse> erros = new ArrayList<>();

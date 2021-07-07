@@ -1,6 +1,7 @@
 package br.com.zupacademy.valteir.mercadolivre.criarproduto;
 
 import br.com.zupacademy.valteir.mercadolivre.criarcategoria.Categoria;
+import br.com.zupacademy.valteir.mercadolivre.criarimagemproduto.ImagemProduto;
 import br.com.zupacademy.valteir.mercadolivre.criarusuario.Usuario;
 import io.jsonwebtoken.lang.Assert;
 import org.hibernate.validator.constraints.Length;
@@ -13,6 +14,7 @@ import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -39,6 +41,12 @@ public class Produto {
     @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
     private Set<Caracteristica> caracteristicas;
 
+    @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
+    private List<ImagemProduto> imagens;
+
+
+    @Deprecated
+    private Produto() {}
 
     public Produto(@NotBlank String nome, @NotNull @Positive BigDecimal valor, @NotNull @Positive Integer quantidade,
                    @NotBlank @Length(max = 1000) String descricao, @NotNull Categoria categoria,
@@ -76,5 +84,15 @@ public class Produto {
 
     public Set<Caracteristica> getCaracteristicas() {
         return Collections.unmodifiableSet(caracteristicas);
+    }
+
+    public boolean usuarioDonoEh(Usuario usuario) {
+        return this.usuario.equals(usuario);
+    }
+
+    public void setLinksImagens(List<String> linksImagens) {
+        this.imagens = linksImagens.stream().map(
+                url -> new ImagemProduto(url, this)
+        ).collect(Collectors.toList());
     }
 }
