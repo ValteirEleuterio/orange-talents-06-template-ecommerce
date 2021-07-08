@@ -17,14 +17,17 @@ public class Opiniao {
     @Id
     @GeneratedValue
     private Long id;
-    private final String titulo;
+    private String titulo;
     @Column(length = 500)
-    private final String descricao;
-    private final Integer nota;
+    private String descricao;
+    private Integer nota;
     @ManyToOne
-    private final Produto produto;
+    private Produto produto;
     @ManyToOne
-    private final Usuario usuario;
+    private Usuario usuario;
+
+    @Deprecated
+    public Opiniao() {}
 
     public Opiniao(@NotBlank String titulo, @NotBlank @Length(max = 500) String descricao,
                    @NotNull @Min(1) @Max(5) Integer nota, @NotNull Produto produto, @NotNull Usuario usuario) {
@@ -37,5 +40,17 @@ public class Opiniao {
         this.nota = nota;
         this.produto = produto;
         this.usuario = usuario;
+    }
+
+    public Integer getNota() {
+        return nota;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 }

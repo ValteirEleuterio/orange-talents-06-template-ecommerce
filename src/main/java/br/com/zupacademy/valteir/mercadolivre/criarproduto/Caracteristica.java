@@ -21,6 +21,9 @@ public class Caracteristica {
     @ManyToOne
     private Produto produto;
 
+    @Deprecated
+    private Caracteristica() {}
+
     public Caracteristica(@NotBlank String nome, @NotBlank String descricao, @NotNull Produto produto) {
         Assert.hasText(nome, "nome não pode ser nulo");
         Assert.hasText(descricao, "descricao não pode ser nulo");
@@ -29,5 +32,13 @@ public class Caracteristica {
         this.nome = nome;
         this.descricao = descricao;
         this.produto = produto;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 }

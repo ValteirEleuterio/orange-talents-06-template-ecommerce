@@ -2,6 +2,8 @@ package br.com.zupacademy.valteir.mercadolivre.criarproduto;
 
 import br.com.zupacademy.valteir.mercadolivre.criarcategoria.Categoria;
 import br.com.zupacademy.valteir.mercadolivre.criarimagemproduto.ImagemProduto;
+import br.com.zupacademy.valteir.mercadolivre.criaropiniaoproduto.Opiniao;
+import br.com.zupacademy.valteir.mercadolivre.criarperguntaproduto.Pergunta;
 import br.com.zupacademy.valteir.mercadolivre.criarusuario.Usuario;
 import io.jsonwebtoken.lang.Assert;
 import org.hibernate.validator.constraints.Length;
@@ -16,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Entity
@@ -28,21 +31,20 @@ public class Produto {
     private BigDecimal valor;
     private Integer quantidade;
     private LocalDateTime instanteCadastro = LocalDateTime.now();
-
     @Column(length = 1000)
     private String descricao;
-
     @ManyToOne
     private Categoria categoria;
-
     @ManyToOne
     private Usuario usuario;
-
     @OneToMany(mappedBy = "produto", cascade = CascadeType.PERSIST)
     private Set<Caracteristica> caracteristicas;
-
     @OneToMany(mappedBy = "produto", cascade = CascadeType.MERGE)
     private List<ImagemProduto> imagens;
+    @OneToMany(mappedBy = "produto")
+    private List<Pergunta> perguntas;
+    @OneToMany(mappedBy = "produto")
+    private List<Opiniao> opinioes;
 
 
     @Deprecated
@@ -86,8 +88,8 @@ public class Produto {
         return usuario.getEmail();
     }
 
-    public Set<Caracteristica> getCaracteristicas() {
-        return Collections.unmodifiableSet(caracteristicas);
+    public <T> List<T> mapCaracteristicas(Function<Caracteristica, T> funcao) {
+        return caracteristicas.stream().map(funcao).collect(Collectors.toList());
     }
 
     public boolean usuarioDonoEh(Usuario usuario) {
@@ -102,5 +104,33 @@ public class Produto {
 
     public String getNome() {
         return nome;
+    }
+
+    public <T> List<T> mapImagens(Function<ImagemProduto, T> function) {
+        return imagens.stream().map(function).collect(Collectors.toList());
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public <T> List<T> mapPerguntas(Function<Pergunta, T> function) {
+        return perguntas.stream().map(function).collect(Collectors.toList());
+    }
+
+    public <T> List<T> mapOpinioes(Function<Opiniao, T> function) {
+        return opinioes.stream().map(function).collect(Collectors.toList());
+    }
+
+    public Integer getNumeroOpinioes() {
+        return opinioes.size();
+    }
+
+    public Double getMediaOpinioes() {
+        return opinioes.stream().mapToInt(Opiniao::getNota).average().orElse(0.0);
     }
 }

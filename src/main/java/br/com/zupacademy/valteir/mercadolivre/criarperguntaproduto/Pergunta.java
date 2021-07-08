@@ -24,6 +24,10 @@ public class Pergunta {
     @ManyToOne
     private Usuario usuario;
 
+
+    @Deprecated
+    private Pergunta() {}
+
     public Pergunta(@NotBlank String titulo, @NotNull Produto produto, @NotNull Usuario usuario) {
         Assert.hasText(titulo, "Titulo é obrigatório");
         Assert.notNull(produto, "Produto não pode ser nulo");
