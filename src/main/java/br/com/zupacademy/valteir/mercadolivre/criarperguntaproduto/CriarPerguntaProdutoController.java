@@ -1,7 +1,9 @@
-package br.com.zupacademy.valteir.mercadolivre.criaropiniaoproduto;
+package br.com.zupacademy.valteir.mercadolivre.criarperguntaproduto;
 
 import br.com.zupacademy.valteir.mercadolivre.config.security.UsuarioLogado;
 import br.com.zupacademy.valteir.mercadolivre.criarproduto.Produto;
+import br.com.zupacademy.valteir.mercadolivre.emailutils.Email;
+import br.com.zupacademy.valteir.mercadolivre.emailutils.EnviadorEmail;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,20 +15,28 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/produtos")
-public class CriarOpiniaoProdutoController {
+public class CriarPerguntaProdutoController {
 
     @Autowired
     private EntityManager manager;
 
-    @PostMapping("/{id}/opinioes")
+    @Autowired
+    private EnviadorEmail enviadorEmail;
+
+    @PostMapping("/{id}/perguntas")
     @Transactional
-    public void criar(@PathVariable("id") Long idProduto, @Valid @RequestBody OpiniaoRequest request, @AuthenticationPrincipal UsuarioLogado usuarioLogado) {
+    public PerguntaResponse criar(@PathVariable("id") Long idProduto, @Valid @RequestBody PerguntaRequest request,
+                      @AuthenticationPrincipal UsuarioLogado usuarioLogado) {
         Produto produto = manager.find(Produto.class, idProduto);
 
         Assert.notNull(produto, "Produto de id: "+idProduto+" não encontrado");
 
-        Opiniao opiniao = request.toModel(produto, usuarioLogado.get());
+        Pergunta pergunta = request.toModel(produto, usuarioLogado.get());
 
-        manager.persist(opiniao);
+        manager.persist(pergunta);
+
+        enviadorEmail.enviar(new Email(pergunta));
+
+        return new PerguntaResponse(pergunta);
     }
 }

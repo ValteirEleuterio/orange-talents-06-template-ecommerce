@@ -82,6 +82,10 @@ public class Produto {
                 .collect(Collectors.toSet());
     }
 
+    public String getEmailDono() {
+        return usuario.getEmail();
+    }
+
     public Set<Caracteristica> getCaracteristicas() {
         return Collections.unmodifiableSet(caracteristicas);
     }
@@ -94,5 +98,9 @@ public class Produto {
         this.imagens = linksImagens.stream().map(
                 url -> new ImagemProduto(url, this)
         ).collect(Collectors.toList());
+    }
+
+    public String getNome() {
+        return nome;
     }
 }
