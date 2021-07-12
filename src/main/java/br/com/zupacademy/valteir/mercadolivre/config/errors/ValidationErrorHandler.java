@@ -25,6 +25,8 @@ public class ValidationErrorHandler {
         result.getFieldErrors().forEach(e -> erros.add(
                 new ErroResponse(e.getField(),e.getDefaultMessage())));
 
+        result.getAllErrors().forEach(e -> erros.add(new ErroResponse(e.getDefaultMessage())));
+
         return erros;
     }
 

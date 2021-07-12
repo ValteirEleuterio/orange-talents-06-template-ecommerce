@@ -7,9 +7,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -76,6 +78,43 @@ class ProdutoTest {
         );
     }
 
+
+    @DisplayName("verifica estoque do prdouto")
+    @ParameterizedTest
+    @CsvSource({"1,1,true", "1,2,false", "4,2,true", "1,5,false" })
+    void teste3(int estoque, int quantidadePedida, boolean resultadoEsperado) {
+        Set<CaracteristicaRequest> caracteristicas = Set.of(
+                new CaracteristicaRequest("key", "value"),
+                new CaracteristicaRequest("key2", "value2"),
+                new CaracteristicaRequest("key3", "value3")
+        );
+        Categoria categoria = new Categoria("categoria");
+        Usuario dono = new Usuario("email@email.com.br", new SenhaLimpa("senhalimpa"));
+        Produto produto = new Produto("nome", BigDecimal.TEN, estoque, "descricao", categoria, dono, caracteristicas);
+
+        boolean resultado = produto.abateEstoque(quantidadePedida);
+
+        Assertions.assertEquals(resultadoEsperado, resultado);
+    }
+
+
+    @DisplayName("Não abate estoque <= zero")
+    @ParameterizedTest
+    @CsvSource({"0", "-1", "-100"})
+    void teste4(int quantidadePedida) {
+        Set<CaracteristicaRequest> caracteristicas = Set.of(
+                new CaracteristicaRequest("key", "value"),
+                new CaracteristicaRequest("key2", "value2"),
+                new CaracteristicaRequest("key3", "value3")
+        );
+        Categoria categoria = new Categoria("categoria");
+        Usuario dono = new Usuario("email@email.com.br", new SenhaLimpa("senhalimpa"));
+        Produto produto = new Produto("nome", BigDecimal.TEN, 10, "descricao", categoria, dono, caracteristicas);
+
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            produto.abateEstoque(quantidadePedida);
+        });
+    }
 
 
 

@@ -133,4 +133,15 @@ public class Produto {
     public Double getMediaOpinioes() {
         return opinioes.stream().mapToInt(Opiniao::getNota).average().orElse(0.0);
     }
+
+    public boolean abateEstoque(Integer quantidadeCompra) {
+        Assert.isTrue(quantidadeCompra > 0, "A quantidade não pode ser menor ou igual a zero");
+
+        if(quantidadeCompra <= this.quantidade) {
+            this.quantidade -= quantidadeCompra;
+            return true;
+        }
+
+        return false;
+    }
 }
