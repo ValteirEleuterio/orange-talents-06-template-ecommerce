@@ -6,8 +6,6 @@ import br.com.zupacademy.valteir.mercadolivre.emailutils.Email;
 import br.com.zupacademy.valteir.mercadolivre.emailutils.EnviadorEmail;
 import io.jsonwebtoken.lang.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,11 +22,13 @@ import javax.validation.Valid;
 @RequestMapping("/compras")
 public class CriarCompraController {
 
-    @Autowired
     private EntityManager manager;
-
-    @Autowired
     private EnviadorEmail enviadorEmail;
+
+    public CriarCompraController(EntityManager manager, EnviadorEmail enviadorEmail) {
+        this.manager = manager;
+        this.enviadorEmail = enviadorEmail;
+    }
 
     @PostMapping
     @Transactional
