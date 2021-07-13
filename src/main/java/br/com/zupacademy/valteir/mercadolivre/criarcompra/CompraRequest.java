@@ -15,7 +15,6 @@ public class CompraRequest {
     @Positive
     private Integer quantidade;
     @NotNull
-
     private GatewayPagamento gateway;
 
     public CompraRequest(Long idProduto, Integer quantidade, GatewayPagamento gateway) {

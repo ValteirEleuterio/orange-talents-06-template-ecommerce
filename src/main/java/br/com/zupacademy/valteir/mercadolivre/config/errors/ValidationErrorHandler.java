@@ -25,7 +25,8 @@ public class ValidationErrorHandler {
         result.getFieldErrors().forEach(e -> erros.add(
                 new ErroResponse(e.getField(),e.getDefaultMessage())));
 
-        result.getAllErrors().forEach(e -> erros.add(new ErroResponse(e.getDefaultMessage())));
+        if(erros.isEmpty())
+            result.getAllErrors().forEach(e -> erros.add(new ErroResponse(e.getDefaultMessage())));
 
         return erros;
     }
@@ -41,6 +42,7 @@ public class ValidationErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErroResponse handle(Exception exception) {
+        exception.printStackTrace();
         return new ErroResponse("Ocorreu um erro interno\n"+ exception.getMessage());
     }
 }
